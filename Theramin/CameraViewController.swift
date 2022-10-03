@@ -83,10 +83,12 @@ class CameraViewController: UIViewController {
 
         // Convert points from AVFoundation coordinates to UIKit coordinates.
         let previewLayer = cameraView?.previewLayer
-        let thumbPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: thumbPoint)
-        let indexPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: indexPoint)
-        print("Thumb: \(thumbPointConverted)")
-        print("Index: \(thumbPointConverted)")
+        if let thumbPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: thumbPoint),
+           let indexPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: indexPoint) {
+            cameraView?.showPoints([thumbPointConverted, indexPointConverted], color: .red)
+            print("Thumb: \(thumbPointConverted)")
+            print("Index: \(indexPointConverted)")
+        }
     }
 }
 
