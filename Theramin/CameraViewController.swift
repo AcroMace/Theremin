@@ -11,6 +11,8 @@ import Vision
 
 class CameraViewController: UIViewController {
 
+    private let MinConfidence: Float = 0.3
+
     private var cameraView: CameraView?
 
     private let videoDataOutputQueue = DispatchQueue(label: "CameraFeedDataOutput", qos: .userInteractive)
@@ -73,33 +75,26 @@ class CameraViewController: UIViewController {
         cameraFeedSession = session
     }
 
-    func processPoints(thumbTip: CGPoint?, indexTip: CGPoint?) {
+    func processPoints(points: [CGPoint]) {
         // Check that we have both points.
-        guard let thumbPoint = thumbTip, let indexPoint = indexTip else {
-            // If there were no observations for more than 2 seconds reset gesture processor.
+        guard points.count > 0 else {
             cameraView?.showPoints([], color: .clear)
             return
         }
 
         // Convert points from AVFoundation coordinates to UIKit coordinates.
         let previewLayer = cameraView?.previewLayer
-        if let thumbPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: thumbPoint),
-           let indexPointConverted = previewLayer?.layerPointConverted(fromCaptureDevicePoint: indexPoint) {
-            cameraView?.showPoints([thumbPointConverted, indexPointConverted], color: .red)
-            print("Thumb: \(thumbPointConverted)")
-            print("Index: \(indexPointConverted)")
-        }
+        cameraView?.showPoints(points.compactMap { previewLayer?.layerPointConverted(fromCaptureDevicePoint: $0) }, color: .red)
     }
 }
 
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        var thumbTip: CGPoint?
-        var indexTip: CGPoint?
+        var points: [CGPoint] = []
 
         defer {
             DispatchQueue.main.sync {
-                self.processPoints(thumbTip: thumbTip, indexTip: indexTip)
+                self.processPoints(points: points)
             }
         }
 
@@ -107,28 +102,36 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         do {
             // Perform VNDetectHumanHandPoseRequest
             try handler.perform([handPoseRequest])
-            // Continue only when a hand was detected in the frame.
-            // Since we set the maximumHandCount property of the request to 1, there will be at most one observation.
-            guard let observation = handPoseRequest.results?.first else {
-                return
-            }
-            // Get points for thumb and index finger.
-            let thumbPoints = try observation.recognizedPoints(.thumb)
-            let indexFingerPoints = try observation.recognizedPoints(.indexFinger)
-            // Look for tip points.
-            guard let thumbTipPoint = thumbPoints[.thumbTip], let indexTipPoint = indexFingerPoints[.indexTip] else {
-                return
-            }
-            // Ignore low confidence points.
-            guard thumbTipPoint.confidence > 0.3 && indexTipPoint.confidence > 0.3 else {
-                return
-            }
-            // Convert points from Vision coordinates to AVFoundation coordinates.
-            thumbTip = CGPoint(x: thumbTipPoint.location.x, y: 1 - thumbTipPoint.location.y)
-            indexTip = CGPoint(x: indexTipPoint.location.x, y: 1 - indexTipPoint.location.y)
+
+            points = handPoseRequest.results?.compactMap { pointForHandObservation($0) } ?? []
         } catch {
             cameraFeedSession?.stopRunning()
             print("Vision error")
         }
+    }
+
+    /**
+     * Will return the point for the index finger if possible, thumb if not
+     */
+    private func pointForHandObservation(_ observation: VNHumanHandPoseObservation) -> CGPoint? {
+        do {
+            let indexFingerPoints = try observation.recognizedPoints(.indexFinger)
+            if let indexTipPoint = indexFingerPoints[.indexTip], indexTipPoint.confidence > MinConfidence {
+                return visionCoordinatesToVideoCoordinates(indexTipPoint)
+            }
+
+            let thumbPoints = try observation.recognizedPoints(.thumb)
+            if let thumbTipPoint = thumbPoints[.thumbTip], thumbTipPoint.confidence > MinConfidence {
+                return visionCoordinatesToVideoCoordinates(thumbTipPoint)
+            }
+        } catch {
+            print("Could not get any recognized points for hand")
+            return nil
+        }
+        return nil
+    }
+
+    private func visionCoordinatesToVideoCoordinates(_ visionCoordinates: VNRecognizedPoint) -> CGPoint {
+        return CGPoint(x: visionCoordinates.location.x, y: 1 - visionCoordinates.location.y)
     }
 }
