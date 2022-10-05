@@ -12,12 +12,16 @@ import Vision
 class CameraViewController: UIViewController {
 
     private let MinConfidence: Float = 0.3
+    private let MinFrequency = 440.0
+    private let MaxFrequency = 1760.00
 
     private var cameraView: CameraView?
 
     private let videoDataOutputQueue = DispatchQueue(label: "CameraFeedDataOutput", qos: .userInteractive)
     private var cameraFeedSession: AVCaptureSession?
     private var handPoseRequest = VNDetectHumanHandPoseRequest()
+
+    let toneOutputUnit = ToneOutputUnit()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +80,8 @@ class CameraViewController: UIViewController {
     }
 
     func processPoints(points: [CGPoint]) {
+        toneOutputUnit.stop()
+
         // Check that we have both points.
         guard points.count > 0 else {
             cameraView?.showPoints([], color: .clear)
@@ -84,7 +90,16 @@ class CameraViewController: UIViewController {
 
         // Convert points from AVFoundation coordinates to UIKit coordinates.
         let previewLayer = cameraView?.previewLayer
-        cameraView?.showPoints(points.compactMap { previewLayer?.layerPointConverted(fromCaptureDevicePoint: $0) }, color: .red)
+        let uiPoints = points.compactMap { previewLayer?.layerPointConverted(fromCaptureDevicePoint: $0) }
+        cameraView?.showPoints(uiPoints, color: .red)
+
+        // This is a value between 0 and 1
+        let frequencyMultiplier = 1.0 - points[0].x
+        let frequency = MinFrequency + (MaxFrequency - MinFrequency) * frequencyMultiplier
+        toneOutputUnit.setFrequency(freq: frequency)
+        print(frequency)
+        toneOutputUnit.enableSpeaker()
+        toneOutputUnit.setToneTime(t: 2000)
     }
 }
 
