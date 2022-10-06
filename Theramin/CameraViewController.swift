@@ -12,8 +12,15 @@ import Vision
 class CameraViewController: UIViewController {
 
     private let MinConfidence: Float = 0.3
-    private let MinFrequency = 440.0
-    private let MaxFrequency = 1760.00
+
+    /**
+     * See here for reference for the frequencies:
+     * https://pages.mtu.edu/~suits/notefreqs.html
+     *
+     * This is currently configured to be 2 octaves from the bottom to the top of the screen
+     **/
+    private let MinFrequency = 440.0 // A4
+    private let MaxFrequency = 1760.00 // A6
 
     private var cameraView: CameraView?
 
