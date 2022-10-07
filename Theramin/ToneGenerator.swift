@@ -10,16 +10,15 @@ import AudioUnit
 import AVFoundation
 
 final class ToneOutputUnit: NSObject {
+    let DefaultVolume = 16383.0
 
     var auAudioUnit: AUAudioUnit! = nil     // placeholder for RemoteIO Audio Unit
 
-    var avActive     = false             // AVAudioSession active flag
     var audioRunning = false             // RemoteIO Audio Unit running flag
 
     var sampleRate: Double = 44100.0    // typical audio sample rate
 
     var f0  =    880.0              // default frequency of tone:   'A' above Concert A
-    var v0  =  16383.0              // default volume of tone:      half full scale
 
     var toneCount: Int32 = 0       // number of samples of tone to play.  0 for silence
 
@@ -30,25 +29,16 @@ final class ToneOutputUnit: NSObject {
         f0 = freq                       //   hard to hear from a tiny iPhone speaker.
     }
 
-    func setToneVolume(vol: Double) {  // 0.0 to 1.0
-        v0 = vol * 32766.0
-    }
-
     func setToneTime(t: Double) {
         toneCount = Int32(t * sampleRate)
     }
 
     func enableSpeaker() {
-
-        if audioRunning {
-
-            print("returned")
+        guard audioRunning else {
             return
+        }
 
-        }           // return if RemoteIO is already running
-
-        do {        // not running, so start hardware
-
+        do {
             let audioComponentDescription = AudioComponentDescription(
                 componentType: kAudioUnitType_Output,
                 componentSubType: kAudioUnitSubType_RemoteIO, // For output to the local sound system
@@ -89,10 +79,9 @@ final class ToneOutputUnit: NSObject {
             try auAudioUnit.startHardware()            //  v2 AudioOutputUnitStart()
             audioRunning = true
 
-        } catch /* let error as NSError */ {
-            print("error 2 \(error)")
+        } catch {
+            print(error)
         }
-
     }
 
     // helper functions
@@ -107,11 +96,7 @@ final class ToneOutputUnit: NSObject {
             let count = Int(frameCount)
 
             // Speaker Output == play tone at frequency f0
-            if (   self.v0 > 0)
-                && (self.toneCount > 0 ) {
-                // audioStalled = false
-
-                var v  = self.v0 ; if v > 32767 { v = 32767 }
+            if self.toneCount > 0 {
                 let sz = Int(mBuffers.mDataByteSize)
 
                 var a  = self.phY        // capture from object for use inside block
@@ -122,7 +107,7 @@ final class ToneOutputUnit: NSObject {
                     for i in 0..<(count) {
                         let u  = sin(a)             // create a sinewave
                         a += d ; if a > 2.0 * Double.pi { a -= 2.0 * Double.pi }
-                        let x = Int16(v * u + 0.5)      // scale & round
+                        let x = Int16(DefaultVolume * u + 0.5)      // scale & round
 
                         if i < (sz / 2) {
                             bptr.assumingMemoryBound(to: Int16.self).pointee = x
@@ -136,7 +121,6 @@ final class ToneOutputUnit: NSObject {
                 self.phY        =   a                   // save sinewave phase
                 self.toneCount  -=  Int32(frameCount)   // decrement time remaining
             } else {
-                // audioStalled = true
                 memset(mBuffers.mData, 0, Int(mBuffers.mDataByteSize))  // silence
             }
         }
