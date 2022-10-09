@@ -63,7 +63,7 @@ final class ToneOutputUnit: NSObject {
     }
 
     func enableSpeaker() {
-        guard audioRunning else {
+        guard !audioRunning else {
             return
         }
 
