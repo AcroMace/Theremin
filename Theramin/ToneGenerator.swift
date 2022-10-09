@@ -1,8 +1,11 @@
 /**
- * Copied and pasted directly from:
+ * Used for generating tones
+ *
+ * A mix of the following resources:
+ * https://www.cocoawithlove.com/2010/10/ios-tone-generator-introduction-to.html
  * https://stackoverflow.com/questions/55572894/produce-sounds-of-different-frequencies-in-swift
  *
- * Will need to follow up and figure out what this is actually doing and see if we can edit it
+ * This is largely a port of Matt Gallagher's iOS tone generator but ported to Swift
  **/
 
 import Foundation
@@ -16,149 +19,128 @@ class ToneGenerator {
      *
      * This is currently configured to be 2 octaves from the bottom to the top of the screen
      **/
-    private let MinFrequency = 440.0 // A4
-    private let MaxFrequency = 1760.00 // A6
+    private static let MinFrequency = 440.0 // A4
+    private static let MaxFrequency = 1760.00 // A6
 
-    let toneOutputUnit = ToneOutputUnit()
+    private static let BytesPerFloat: UInt32 = 4
+    private static let BitsPerByte: UInt32 = 8
+    private static let SampleRate: Double = 44100
+    private static let Amplitude: Double = 0.25 // i.e. the volume
+    private static let MonotoneChannel = 0 // One channel, so it's the first one
+
+    private var audioComponentInstance: AudioComponentInstance?
+    private var theta: Double = 0
+    private var frequency: Double = 0 // The frequency actually being changed
+
+    // MARK: Public APIs
+
+    init() {
+        audioComponentInstance = createAudioUnit()
+
+        guard let audioComponentInstance else {
+            print("Audio component instance does not exist")
+            return
+        }
+
+        // This starts the sound
+        AudioUnitInitialize(audioComponentInstance)
+        AudioOutputUnitStart(audioComponentInstance)
+    }
 
     /**
      * Play a frequency given a value between 0 and 1
      */
     func playFrequency(frequencyMultiplier: Double) {
-        let frequency = MinFrequency + (MaxFrequency - MinFrequency) * frequencyMultiplier
+
+        let frequency = ToneGenerator.MinFrequency + (ToneGenerator.MaxFrequency - ToneGenerator.MinFrequency) * frequencyMultiplier
         print("Playing frequency: \(frequency)")
-
-        toneOutputUnit.setFrequency(freq: frequency)
-        toneOutputUnit.enableSpeaker()
-        toneOutputUnit.setToneTime(t: 2000)
+        self.frequency = frequency
     }
 
     func stop() {
-        toneOutputUnit.stop()
-    }
-}
-
-final class ToneOutputUnit: NSObject {
-    let DefaultVolume = 16383.0
-
-    var auAudioUnit: AUAudioUnit! = nil     // placeholder for RemoteIO Audio Unit
-
-    var audioRunning = false             // RemoteIO Audio Unit running flag
-
-    var sampleRate: Double = 44100.0    // typical audio sample rate
-
-    var f0  =    880.0              // default frequency of tone:   'A' above Concert A
-
-    var toneCount: Int32 = 0       // number of samples of tone to play.  0 for silence
-
-    private var phY =     0.0       // save phase of sine wave to prevent clicking
-    private var interrupted = false     // for restart from audio interruption notification
-
-    func setFrequency(freq: Double) {  // audio frequencies below 500 Hz may be
-        f0 = freq                       //   hard to hear from a tiny iPhone speaker.
-    }
-
-    func setToneTime(t: Double) {
-        toneCount = Int32(t * sampleRate)
-    }
-
-    func enableSpeaker() {
-        guard !audioRunning else {
-            return
+        if let audioComponentInstance {
+//            AudioOutputUnitStop(audioComponentInstance)
+//            AudioUnitUninitialize(audioComponentInstance)
+//            AudioComponentInstanceDispose(audioComponentInstance)
+        } else {
+            print("Audio component instance does not exist")
         }
-
-        do {
-            let audioComponentDescription = AudioComponentDescription(
-                componentType: kAudioUnitType_Output,
-                componentSubType: kAudioUnitSubType_RemoteIO, // For output to the local sound system
-                componentManufacturer: kAudioUnitManufacturer_Apple,
-                componentFlags: 0,
-                componentFlagsMask: 0 )
-
-            if auAudioUnit == nil {
-
-               auAudioUnit = try AUAudioUnit(componentDescription: audioComponentDescription)
-
-                let bus0 = auAudioUnit.inputBusses[0]
-
-                let audioFormat = AVAudioFormat(
-                    commonFormat: AVAudioCommonFormat.pcmFormatInt16,   // short int samples
-                    sampleRate: Double(sampleRate),
-                    channels: AVAudioChannelCount(2),
-                    interleaved: true )                                 // interleaved stereo
-
-                try bus0.setFormat(audioFormat ?? AVAudioFormat())  //      for speaker bus
-
-                auAudioUnit.outputProvider = { (    //  AURenderPullInputBlock?
-                    _,
-                    _,
-                    frameCount,
-                    _,
-                    inputDataList ) -> AUAudioUnitStatus in
-
-                    self.fillSpeakerBuffer(inputDataList: inputDataList, frameCount: frameCount)
-                    return(0)
-                }
-            }
-
-            auAudioUnit.isOutputEnabled = true
-            toneCount = 0
-
-            try auAudioUnit.allocateRenderResources()  //  v2 AudioUnitInitialize()
-            try auAudioUnit.startHardware()            //  v2 AudioOutputUnitStart()
-            audioRunning = true
-
-        } catch {
-            print(error)
-        }
+//        audioComponentInstance = nil
     }
 
-    // helper functions
+    // MARK: Private helpers
 
-    private func fillSpeakerBuffer(     // process RemoteIO Buffer for output
-        inputDataList: UnsafeMutablePointer<AudioBufferList>, frameCount: UInt32 ) {
-        let inputDataPtr = UnsafeMutableAudioBufferListPointer(inputDataList)
-        let nBuffers = inputDataPtr.count
-        if nBuffers > 0 {
+    private static func RenderToneCallback(inRefCon: UnsafeMutableRawPointer, ioActionFlags: UnsafeMutablePointer<AudioUnitRenderActionFlags>, inTimeStamp: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) -> OSStatus {
+        let toneGenerator = unsafeBitCast(inRefCon, to: ToneGenerator.self)
+        var theta = toneGenerator.theta
+        let thetaIncrement = 2.0 * Double.pi * toneGenerator.frequency / ToneGenerator.SampleRate
 
-            let mBuffers: AudioBuffer = inputDataPtr[0]
-            let count = Int(frameCount)
+        guard let ioPtr = UnsafeMutableAudioBufferListPointer(ioData),
+              let monotoneChannel = ioPtr[ToneGenerator.MonotoneChannel].mData else {
+            fatalError("Could not access the monotone channel in the passed in buffer")
+        }
+        let buffer = monotoneChannel.assumingMemoryBound(to: Float.self)
 
-            // Speaker Output == play tone at frequency f0
-            if self.toneCount > 0 {
-                let sz = Int(mBuffers.mDataByteSize)
-
-                var a  = self.phY        // capture from object for use inside block
-                let d  = 2.0 * Double.pi * self.f0 / self.sampleRate     // phase delta
-
-                let bufferPointer = UnsafeMutableRawPointer(mBuffers.mData)
-                if var bptr = bufferPointer {
-                    for i in 0..<(count) {
-                        let u  = sin(a)             // create a sinewave
-                        a += d ; if a > 2.0 * Double.pi { a -= 2.0 * Double.pi }
-                        let x = Int16(DefaultVolume * u + 0.5)      // scale & round
-
-                        if i < (sz / 2) {
-                            bptr.assumingMemoryBound(to: Int16.self).pointee = x
-                            bptr += 2   // increment by 2 bytes for next Int16 item
-                            bptr.assumingMemoryBound(to: Int16.self).pointee = x
-                            bptr += 2   // stereo, so fill both Left & Right channels
-                        }
-                    }
-                }
-
-                self.phY        =   a                   // save sinewave phase
-                self.toneCount  -=  Int32(frameCount)   // decrement time remaining
-            } else {
-                memset(mBuffers.mData, 0, Int(mBuffers.mDataByteSize))  // silence
+        // Generate the samples
+        for frame in 0 ..< inNumberFrames {
+            buffer[Int(frame)] = Float(sin(theta) * ToneGenerator.Amplitude)
+            theta += thetaIncrement
+            if theta > 2.0 * Double.pi {
+                theta -= 2.0 * Double.pi
             }
         }
+
+        // Store the updated theta
+        toneGenerator.theta = theta
+
+        return noErr
     }
 
-    func stop() {
-        if audioRunning {
-            auAudioUnit.stopHardware()
-            audioRunning = false
+    private func createAudioUnit() -> AudioComponentInstance? {
+        // Find the default playback output unit
+        var audioComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_Output,
+                                                                  componentSubType: kAudioUnitSubType_RemoteIO,
+                                                                  componentManufacturer: kAudioUnitManufacturer_Apple,
+                                                                  componentFlags: 0,
+                                                                  componentFlagsMask: 0)
+
+        // Get the default playback unit
+        guard let defaultOutput = AudioComponentFindNext(nil, &audioComponentDescription) else {
+            fatalError("Can't find default output")
         }
+
+        // Create the audio component instance using the output
+        var toneUnit: AudioComponentInstance?
+        guard AudioComponentInstanceNew(defaultOutput, &toneUnit) == noErr, let toneUnit else {
+            fatalError("Could not create AudioComponentInstance")
+        }
+
+        // Set the tone rendering function
+        var renderCallback = AURenderCallbackStruct(inputProc: { (inRefCon, ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData) -> OSStatus in
+            return ToneGenerator.RenderToneCallback(inRefCon: inRefCon, ioActionFlags: ioActionFlags, inTimeStamp: inTimeStamp, inBusNumber: inBusNumber, inNumberFrames: inNumberFrames, ioData: ioData)
+        }, inputProcRefCon: Unmanaged.passUnretained(self).toOpaque())
+
+        // Set the callback
+        if AudioUnitSetProperty(toneUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0 /* inElement */, &renderCallback, UInt32(MemoryLayout.size(ofValue: renderCallback))) != noErr {
+            fatalError("Could not set the callback")
+        }
+
+        // Magic settings from Matt Gallagher
+        // Apparently sets to: 32bit, single channel, floating point, linear PCM
+        var streamFormat = AudioStreamBasicDescription()
+        streamFormat.mSampleRate = ToneGenerator.SampleRate
+        streamFormat.mFormatID = kAudioFormatLinearPCM
+        streamFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved
+        streamFormat.mBytesPerPacket = ToneGenerator.BytesPerFloat
+        streamFormat.mFramesPerPacket = 1
+        streamFormat.mBytesPerFrame = ToneGenerator.BytesPerFloat
+        streamFormat.mChannelsPerFrame = 1
+        streamFormat.mBitsPerChannel = ToneGenerator.BytesPerFloat * ToneGenerator.BitsPerByte
+
+        if AudioUnitSetProperty(toneUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0 /* inElement */, &streamFormat, UInt32(MemoryLayout.size(ofValue: streamFormat))) != noErr {
+            fatalError("Could not set the audio stream format")
+        }
+
+        return toneUnit
     }
 }
