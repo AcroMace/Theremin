@@ -34,38 +34,34 @@ class ToneGenerator {
 
     // MARK: Public APIs
 
-    init() {
-        audioComponentInstance = createAudioUnit()
-
-        guard let audioComponentInstance else {
-            print("Audio component instance does not exist")
-            return
-        }
-
-        // This starts the sound
-        AudioUnitInitialize(audioComponentInstance)
-        AudioOutputUnitStart(audioComponentInstance)
-    }
-
     /**
      * Play a frequency given a value between 0 and 1
      */
     func playFrequency(frequencyMultiplier: Double) {
+        if audioComponentInstance == nil {
+            audioComponentInstance = createAudioUnit()
+            guard let audioComponentInstance else {
+                print("Audio component could not be created")
+                return
+            }
 
+            // This starts the sound
+            AudioUnitInitialize(audioComponentInstance)
+            AudioOutputUnitStart(audioComponentInstance)
+        }
         let frequency = ToneGenerator.MinFrequency + (ToneGenerator.MaxFrequency - ToneGenerator.MinFrequency) * frequencyMultiplier
         print("Playing frequency: \(frequency)")
         self.frequency = frequency
     }
 
     func stop() {
-        if let audioComponentInstance {
-//            AudioOutputUnitStop(audioComponentInstance)
-//            AudioUnitUninitialize(audioComponentInstance)
-//            AudioComponentInstanceDispose(audioComponentInstance)
-        } else {
-            print("Audio component instance does not exist")
+        guard let audioComponentInstance else {
+            return
         }
-//        audioComponentInstance = nil
+        AudioOutputUnitStop(audioComponentInstance)
+        AudioUnitUninitialize(audioComponentInstance)
+        AudioComponentInstanceDispose(audioComponentInstance)
+        self.audioComponentInstance = nil
     }
 
     // MARK: Private helpers

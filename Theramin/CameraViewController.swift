@@ -78,11 +78,10 @@ class CameraViewController: UIViewController {
     }
 
     func processPoints(points: [CGPoint]) {
-        toneGenerator.stop()
-
         // Check that we have both points.
         guard points.count > 0 else {
             cameraView?.showPoints([], color: .clear)
+            toneGenerator.stop()
             return
         }
 
