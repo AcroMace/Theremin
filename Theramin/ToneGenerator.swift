@@ -9,6 +9,35 @@ import Foundation
 import AudioUnit
 import AVFoundation
 
+class ToneGenerator {
+    /**
+     * See here for reference for the frequencies:
+     * https://pages.mtu.edu/~suits/notefreqs.html
+     *
+     * This is currently configured to be 2 octaves from the bottom to the top of the screen
+     **/
+    private let MinFrequency = 440.0 // A4
+    private let MaxFrequency = 1760.00 // A6
+
+    let toneOutputUnit = ToneOutputUnit()
+
+    /**
+     * Play a frequency given a value between 0 and 1
+     */
+    func playFrequency(frequencyMultiplier: Double) {
+        let frequency = MinFrequency + (MaxFrequency - MinFrequency) * frequencyMultiplier
+        print("Playing frequency: \(frequency)")
+
+        toneOutputUnit.setFrequency(freq: frequency)
+        toneOutputUnit.enableSpeaker()
+        toneOutputUnit.setToneTime(t: 2000)
+    }
+
+    func stop() {
+        toneOutputUnit.stop()
+    }
+}
+
 final class ToneOutputUnit: NSObject {
     let DefaultVolume = 16383.0
 

@@ -11,16 +11,7 @@ import Vision
 
 class CameraViewController: UIViewController {
 
-    private let MinConfidence: Float = 0.3
-
-    /**
-     * See here for reference for the frequencies:
-     * https://pages.mtu.edu/~suits/notefreqs.html
-     *
-     * This is currently configured to be 2 octaves from the bottom to the top of the screen
-     **/
-    private let MinFrequency = 440.0 // A4
-    private let MaxFrequency = 1760.00 // A6
+    private let MinFingertipObservationConfidence: Float = 0.3
 
     private var cameraView: CameraView?
 
@@ -28,7 +19,7 @@ class CameraViewController: UIViewController {
     private var cameraFeedSession: AVCaptureSession?
     private var handPoseRequest = VNDetectHumanHandPoseRequest()
 
-    let toneOutputUnit = ToneOutputUnit()
+    let toneGenerator = ToneGenerator()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,7 +78,7 @@ class CameraViewController: UIViewController {
     }
 
     func processPoints(points: [CGPoint]) {
-        toneOutputUnit.stop()
+        toneGenerator.stop()
 
         // Check that we have both points.
         guard points.count > 0 else {
@@ -102,11 +93,7 @@ class CameraViewController: UIViewController {
 
         // This is a value between 0 and 1
         let frequencyMultiplier = 1.0 - points[0].x
-        let frequency = MinFrequency + (MaxFrequency - MinFrequency) * frequencyMultiplier
-        toneOutputUnit.setFrequency(freq: frequency)
-        print(frequency)
-        toneOutputUnit.enableSpeaker()
-        toneOutputUnit.setToneTime(t: 2000)
+        toneGenerator.playFrequency(frequencyMultiplier: frequencyMultiplier)
     }
 }
 
@@ -138,12 +125,12 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     private func pointForHandObservation(_ observation: VNHumanHandPoseObservation) -> CGPoint? {
         do {
             let indexFingerPoints = try observation.recognizedPoints(.indexFinger)
-            if let indexTipPoint = indexFingerPoints[.indexTip], indexTipPoint.confidence > MinConfidence {
+            if let indexTipPoint = indexFingerPoints[.indexTip], indexTipPoint.confidence > MinFingertipObservationConfidence {
                 return visionCoordinatesToVideoCoordinates(indexTipPoint)
             }
 
             let thumbPoints = try observation.recognizedPoints(.thumb)
-            if let thumbTipPoint = thumbPoints[.thumbTip], thumbTipPoint.confidence > MinConfidence {
+            if let thumbTipPoint = thumbPoints[.thumbTip], thumbTipPoint.confidence > MinFingertipObservationConfidence {
                 return visionCoordinatesToVideoCoordinates(thumbTipPoint)
             }
         } catch {
