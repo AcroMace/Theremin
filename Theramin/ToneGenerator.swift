@@ -8,7 +8,6 @@
  * This is largely a port of Matt Gallagher's iOS tone generator but ported to Swift
  **/
 
-import Foundation
 import AudioUnit
 import AVFoundation
 

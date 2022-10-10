@@ -5,7 +5,10 @@
 //  Created by Andy Cho on 10/9/22.
 //
 
-import UIKit
+/**
+ * This detects where hands are and sends a point for each detected hand back through the delegate
+ */
+
 import AVFoundation
 import Vision
 

@@ -7,11 +7,8 @@
 
 import UIKit
 import AVFoundation
-import Vision
 
 class TheraminViewController: UIViewController {
-
-    private let MinFingertipObservationConfidence: Float = 0.3
 
     private var cameraView: CameraView?
     let leftHandToneGenerator = ToneGenerator(minFrequency: Tone.a4, maxFrequency: Tone.a5)
