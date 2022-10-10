@@ -56,7 +56,7 @@ extension TheraminViewController: HandPositionControllerDelegate {
         // Convert points from AVFoundation coordinates to UIKit coordinates.
         let previewLayer = cameraView?.previewLayer
         let uiPoints = points.compactMap { previewLayer?.layerPointConverted(fromCaptureDevicePoint: $0) }
-        cameraView?.showPoints(uiPoints, color: .red)
+        cameraView?.showPoints(uiPoints, color: .systemPurple)
 
         // We use the original captureDevicePoint since it's a value between 0 and 1
         // Note that it's rotated so we use the x value
