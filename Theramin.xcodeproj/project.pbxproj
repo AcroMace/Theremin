@@ -12,7 +12,7 @@
 		63B1161228EB063B0030E5EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1161128EB063B0030E5EA /* AppDelegate.swift */; };
 		63B1161828EB063C0030E5EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63B1161728EB063C0030E5EA /* Assets.xcassets */; };
 		63B1161B28EB063C0030E5EA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63B1161A28EB063C0030E5EA /* Preview Assets.xcassets */; };
-		63B1162228EB09090030E5EA /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162128EB09090030E5EA /* CameraViewController.swift */; };
+		63B1162228EB09090030E5EA /* TheraminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162128EB09090030E5EA /* TheraminViewController.swift */; };
 		63B1162428EB0BE50030E5EA /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162328EB0BE50030E5EA /* CameraView.swift */; };
 		63B1162628EC6A140030E5EA /* ToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162528EC6A140030E5EA /* ToneGenerator.swift */; };
 /* End PBXBuildFile section */
@@ -24,7 +24,7 @@
 		63B1161128EB063B0030E5EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63B1161728EB063C0030E5EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63B1161A28EB063C0030E5EA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		63B1162128EB09090030E5EA /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		63B1162128EB09090030E5EA /* TheraminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheraminViewController.swift; sourceTree = "<group>"; };
 		63B1162328EB0BE50030E5EA /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		63B1162528EC6A140030E5EA /* ToneGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToneGenerator.swift; sourceTree = "<group>"; };
 		63B1162728F2BB050030E5EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -63,7 +63,7 @@
 				63B1162728F2BB050030E5EA /* Info.plist */,
 				63B1161128EB063B0030E5EA /* AppDelegate.swift */,
 				63B1162328EB0BE50030E5EA /* CameraView.swift */,
-				63B1162128EB09090030E5EA /* CameraViewController.swift */,
+				63B1162128EB09090030E5EA /* TheraminViewController.swift */,
 				63904E6B28F301D80048F16A /* HandPositionController.swift */,
 				63B1162528EC6A140030E5EA /* ToneGenerator.swift */,
 				63904E6D28F3BB680048F16A /* Tone.swift */,
@@ -154,7 +154,7 @@
 				63B1162428EB0BE50030E5EA /* CameraView.swift in Sources */,
 				63B1161228EB063B0030E5EA /* AppDelegate.swift in Sources */,
 				63904E6E28F3BB680048F16A /* Tone.swift in Sources */,
-				63B1162228EB09090030E5EA /* CameraViewController.swift in Sources */,
+				63B1162228EB09090030E5EA /* TheraminViewController.swift in Sources */,
 				63904E6C28F301D80048F16A /* HandPositionController.swift in Sources */,
 				63B1162628EC6A140030E5EA /* ToneGenerator.swift in Sources */,
 			);

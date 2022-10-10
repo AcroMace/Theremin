@@ -1,5 +1,5 @@
 //
-//  CameraViewController.swift
+//  TheraminViewController.swift
 //  Theramin
 //
 //  Created by Andy Cho on 10/3/22.
@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 import Vision
 
-class CameraViewController: UIViewController {
+class TheraminViewController: UIViewController {
 
     private let MinFingertipObservationConfidence: Float = 0.3
 
@@ -46,7 +46,7 @@ class CameraViewController: UIViewController {
     }
 }
 
-extension CameraViewController: HandPositionControllerDelegate {
+extension TheraminViewController: HandPositionControllerDelegate {
     func processPoints(points: [CGPoint]) {
         // Check that we have at least one hand
         guard points.count > 0 else {
