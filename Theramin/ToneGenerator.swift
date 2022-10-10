@@ -13,26 +13,32 @@ import AudioUnit
 import AVFoundation
 
 class ToneGenerator {
-    /**
-     * See here for reference for the frequencies:
-     * https://pages.mtu.edu/~suits/notefreqs.html
-     *
-     * This is currently configured to be 2 octaves from the bottom to the top of the screen
-     **/
-    private static let MinFrequency = 440.0 // A4
-    private static let MaxFrequency = 1760.00 // A6
-
     private static let BytesPerFloat: UInt32 = 4
     private static let BitsPerByte: UInt32 = 8
     private static let SampleRate: Double = 44100
     private static let Amplitude: Double = 0.25 // i.e. the volume
     private static let MonotoneChannel = 0 // One channel, so it's the first one
 
-    private var audioComponentInstance: AudioComponentInstance?
-    private var theta: Double = 0
+    // The range of frequencies to play
+    private var minFrequency: Double
+    private var maxFrequency: Double
+
+    private var audioComponentInstance: AudioComponentInstance? // exists when a tone is currently being played
+    private var theta: Double = 0 // i.e. time
     private var frequency: Double = 0 // The frequency actually being changed
 
     // MARK: Public APIs
+
+    init() {
+        // Use default frequencies
+        minFrequency = Tone.a4.frequency()
+        maxFrequency = Tone.a5.frequency()
+    }
+
+    init(minFrequency: Tone, maxFrequency: Tone) {
+        self.minFrequency = minFrequency.frequency()
+        self.maxFrequency = maxFrequency.frequency()
+    }
 
     /**
      * Play a frequency given a value between 0 and 1
@@ -49,7 +55,7 @@ class ToneGenerator {
             AudioUnitInitialize(audioComponentInstance)
             AudioOutputUnitStart(audioComponentInstance)
         }
-        let frequency = ToneGenerator.MinFrequency + (ToneGenerator.MaxFrequency - ToneGenerator.MinFrequency) * frequencyMultiplier
+        let frequency = minFrequency + (maxFrequency - minFrequency) * frequencyMultiplier
         print("Playing frequency: \(frequency)")
         self.frequency = frequency
     }

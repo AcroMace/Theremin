@@ -14,7 +14,8 @@ class CameraViewController: UIViewController {
     private let MinFingertipObservationConfidence: Float = 0.3
 
     private var cameraView: CameraView?
-    let toneGenerator = ToneGenerator()
+    let leftHandToneGenerator = ToneGenerator(minFrequency: Tone.a4, maxFrequency: Tone.a5)
+    let rightHandToneGenerator = ToneGenerator(minFrequency: Tone.a5, maxFrequency: Tone.a6)
     let handPositionController = HandPositionController()
 
     override func viewDidLoad() {
@@ -47,10 +48,11 @@ class CameraViewController: UIViewController {
 
 extension CameraViewController: HandPositionControllerDelegate {
     func processPoints(points: [CGPoint]) {
-        // Check that we have both points.
+        // Check that we have at least one hand
         guard points.count > 0 else {
             cameraView?.showPoints([], color: .clear)
-            toneGenerator.stop()
+            leftHandToneGenerator.stop()
+            rightHandToneGenerator.stop()
             return
         }
 
@@ -59,8 +61,34 @@ extension CameraViewController: HandPositionControllerDelegate {
         let uiPoints = points.compactMap { previewLayer?.layerPointConverted(fromCaptureDevicePoint: $0) }
         cameraView?.showPoints(uiPoints, color: .red)
 
-        // This is a value between 0 and 1
-        let frequencyMultiplier = 1.0 - points[0].x
-        toneGenerator.playFrequency(frequencyMultiplier: frequencyMultiplier)
+        // We use the original captureDevicePoint since it's a value between 0 and 1
+        // Note that it's rotated so we use the x value
+        let firstPointFrequencyMultiplier = 1.0 - points[0].x
+
+        if points.count == 1 {
+            // If there's only one hand, we have to stop the other one
+            if isLeftHand(layerPoint: uiPoints[0], previewLayer: previewLayer) {
+                leftHandToneGenerator.playFrequency(frequencyMultiplier: firstPointFrequencyMultiplier)
+                rightHandToneGenerator.stop()
+            } else {
+                rightHandToneGenerator.playFrequency(frequencyMultiplier: firstPointFrequencyMultiplier)
+                leftHandToneGenerator.stop()
+            }
+        } else {
+            // We have at least two hands
+            let secondPointFrequencyMultiplier = 1.0 - points[1].x
+            if isLeftHand(layerPoint: uiPoints[0], previewLayer: previewLayer) {
+                leftHandToneGenerator.playFrequency(frequencyMultiplier: firstPointFrequencyMultiplier)
+                rightHandToneGenerator.playFrequency(frequencyMultiplier: secondPointFrequencyMultiplier)
+            } else {
+                rightHandToneGenerator.playFrequency(frequencyMultiplier: firstPointFrequencyMultiplier)
+                leftHandToneGenerator.playFrequency(frequencyMultiplier: secondPointFrequencyMultiplier)
+            }
+        }
+    }
+
+    private func isLeftHand(layerPoint: CGPoint, previewLayer: AVCaptureVideoPreviewLayer?) -> Bool {
+        let width = previewLayer?.frame.width ?? 0
+        return layerPoint.x < width / 2.0
     }
 }
