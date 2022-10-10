@@ -2,6 +2,8 @@
 
 Playing music with your hands using the Vision framework, vaguely based off the Theramin
 
+<img src="https://github.com/AcroMace/Theramin/blob/main/Theramin/Assets.xcassets/AppIcon.appiconset/Theramin.png" width="240">
+
 ## Getting started
 
 1. Open `Theramin.xcodeproj`
