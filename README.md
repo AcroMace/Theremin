@@ -1,12 +1,12 @@
-# Theramin
+# Theremin
 
-Playing music with your hands using the Vision framework, vaguely based off the Theramin
+Playing music with your hands using the Vision framework, vaguely based off the Theremin
 
-<img src="https://github.com/AcroMace/Theramin/blob/main/Theramin/Assets.xcassets/AppIcon.appiconset/Theramin.png" width="240">
+<img src="https://github.com/AcroMace/Theremin/blob/main/Theremin/Assets.xcassets/AppIcon.appiconset/Theremin.png" width="240">
 
 ## Getting started
 
-1. Open `Theramin.xcodeproj`
+1. Open `Theremin.xcodeproj`
 2. Build and run on an iOS device (note: it only supports portrait mode)
 3. Move your index finger up and down to play different frequencies
 
@@ -19,8 +19,8 @@ Playing music with your hands using the Vision framework, vaguely based off the 
 
 ## Possible upgrades
 
-- Unlike an actual theramin, there's no volume control here. You could add it fairly easily by exposing the volume from the `ToneGenerator` and setting it with one of the detected hands in `TheraminViewController`.
-- You could make 3+ hands support in `TheraminViewController` by removing the assumption of just having the left and right hand. One way could be sorting by x-position and mapping to a list of tone generators instead. Another harder way might be using RealityKit and anchoring a ToneGenerator to a body tracking anchor.
+- Unlike an actual theremin, there's no volume control here. You could add it fairly easily by exposing the volume from the `ToneGenerator` and setting it with one of the detected hands in `ThereminViewController`.
+- You could make 3+ hands support in `ThereminViewController` by removing the assumption of just having the left and right hand. One way could be sorting by x-position and mapping to a list of tone generators instead. Another harder way might be using RealityKit and anchoring a ToneGenerator to a body tracking anchor.
 - Landscape mode!
 - This compiles and runs and works surprisingly well on Mac but the camera feed looks zoomed in. I suspect this could be fixed the same way as landscape mode.
 

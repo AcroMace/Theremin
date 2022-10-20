@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Theramin
+//  Theremin
 //
 //  Created by Andy Cho on 10/3/22.
 //
@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = TheraminViewController()
+        window.rootViewController = ThereminViewController()
         self.window = window
         window.makeKeyAndVisible()
         return true

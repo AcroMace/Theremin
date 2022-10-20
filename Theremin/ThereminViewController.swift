@@ -1,6 +1,6 @@
 //
-//  TheraminViewController.swift
-//  Theramin
+//  ThereminViewController.swift
+//  Theremin
 //
 //  Created by Andy Cho on 10/3/22.
 //
@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class TheraminViewController: UIViewController {
+class ThereminViewController: UIViewController {
 
     private var cameraView: CameraView?
     let leftHandToneGenerator = ToneGenerator(minFrequency: Tone.a4, maxFrequency: Tone.a5)
@@ -43,7 +43,7 @@ class TheraminViewController: UIViewController {
     }
 }
 
-extension TheraminViewController: HandPositionControllerDelegate {
+extension ThereminViewController: HandPositionControllerDelegate {
     func processPoints(points: [CGPoint]) {
         // Check that we have at least one hand
         guard points.count > 0 else {

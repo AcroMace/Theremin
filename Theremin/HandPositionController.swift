@@ -1,6 +1,6 @@
 //
 //  HandPositionController.swift
-//  Theramin
+//  Theremin
 //
 //  Created by Andy Cho on 10/9/22.
 //

@@ -1,6 +1,6 @@
 //
 //  Tone.swift
-//  Theramin
+//  Theremin
 //
 //  Created by Andy Cho on 10/10/22.
 //

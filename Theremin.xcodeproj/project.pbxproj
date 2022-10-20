@@ -12,7 +12,7 @@
 		63B1161228EB063B0030E5EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1161128EB063B0030E5EA /* AppDelegate.swift */; };
 		63B1161828EB063C0030E5EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63B1161728EB063C0030E5EA /* Assets.xcassets */; };
 		63B1161B28EB063C0030E5EA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63B1161A28EB063C0030E5EA /* Preview Assets.xcassets */; };
-		63B1162228EB09090030E5EA /* TheraminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162128EB09090030E5EA /* TheraminViewController.swift */; };
+		63B1162228EB09090030E5EA /* ThereminViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162128EB09090030E5EA /* ThereminViewController.swift */; };
 		63B1162428EB0BE50030E5EA /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162328EB0BE50030E5EA /* CameraView.swift */; };
 		63B1162628EC6A140030E5EA /* ToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B1162528EC6A140030E5EA /* ToneGenerator.swift */; };
 /* End PBXBuildFile section */
@@ -20,11 +20,11 @@
 /* Begin PBXFileReference section */
 		63904E6B28F301D80048F16A /* HandPositionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandPositionController.swift; sourceTree = "<group>"; };
 		63904E6D28F3BB680048F16A /* Tone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tone.swift; sourceTree = "<group>"; };
-		63B1160E28EB063B0030E5EA /* Theramin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Theramin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		63B1160E28EB063B0030E5EA /* Theremin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Theremin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B1161128EB063B0030E5EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63B1161728EB063C0030E5EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63B1161A28EB063C0030E5EA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		63B1162128EB09090030E5EA /* TheraminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheraminViewController.swift; sourceTree = "<group>"; };
+		63B1162128EB09090030E5EA /* ThereminViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThereminViewController.swift; sourceTree = "<group>"; };
 		63B1162328EB0BE50030E5EA /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		63B1162528EC6A140030E5EA /* ToneGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToneGenerator.swift; sourceTree = "<group>"; };
 		63B1162728F2BB050030E5EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		63B1160528EB063B0030E5EA = {
 			isa = PBXGroup;
 			children = (
-				63B1161028EB063B0030E5EA /* Theramin */,
+				63B1161028EB063B0030E5EA /* Theremin */,
 				63B1160F28EB063B0030E5EA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,25 +52,25 @@
 		63B1160F28EB063B0030E5EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				63B1160E28EB063B0030E5EA /* Theramin.app */,
+				63B1160E28EB063B0030E5EA /* Theremin.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		63B1161028EB063B0030E5EA /* Theramin */ = {
+		63B1161028EB063B0030E5EA /* Theremin */ = {
 			isa = PBXGroup;
 			children = (
 				63B1162728F2BB050030E5EA /* Info.plist */,
 				63B1161128EB063B0030E5EA /* AppDelegate.swift */,
 				63B1162328EB0BE50030E5EA /* CameraView.swift */,
-				63B1162128EB09090030E5EA /* TheraminViewController.swift */,
+				63B1162128EB09090030E5EA /* ThereminViewController.swift */,
 				63904E6B28F301D80048F16A /* HandPositionController.swift */,
 				63B1162528EC6A140030E5EA /* ToneGenerator.swift */,
 				63904E6D28F3BB680048F16A /* Tone.swift */,
 				63B1161728EB063C0030E5EA /* Assets.xcassets */,
 				63B1161928EB063C0030E5EA /* Preview Content */,
 			);
-			path = Theramin;
+			path = Theremin;
 			sourceTree = "<group>";
 		};
 		63B1161928EB063C0030E5EA /* Preview Content */ = {
@@ -84,9 +84,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		63B1160D28EB063B0030E5EA /* Theramin */ = {
+		63B1160D28EB063B0030E5EA /* Theremin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63B1161E28EB063C0030E5EA /* Build configuration list for PBXNativeTarget "Theramin" */;
+			buildConfigurationList = 63B1161E28EB063C0030E5EA /* Build configuration list for PBXNativeTarget "Theremin" */;
 			buildPhases = (
 				63B1160A28EB063B0030E5EA /* Sources */,
 				63B1160B28EB063B0030E5EA /* Frameworks */,
@@ -96,9 +96,9 @@
 			);
 			dependencies = (
 			);
-			name = Theramin;
-			productName = Theramin;
-			productReference = 63B1160E28EB063B0030E5EA /* Theramin.app */;
+			name = Theremin;
+			productName = Theremin;
+			productReference = 63B1160E28EB063B0030E5EA /* Theremin.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -116,7 +116,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 63B1160928EB063B0030E5EA /* Build configuration list for PBXProject "Theramin" */;
+			buildConfigurationList = 63B1160928EB063B0030E5EA /* Build configuration list for PBXProject "Theremin" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -129,7 +129,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				63B1160D28EB063B0030E5EA /* Theramin */,
+				63B1160D28EB063B0030E5EA /* Theremin */,
 			);
 		};
 /* End PBXProject section */
@@ -154,7 +154,7 @@
 				63B1162428EB0BE50030E5EA /* CameraView.swift in Sources */,
 				63B1161228EB063B0030E5EA /* AppDelegate.swift in Sources */,
 				63904E6E28F3BB680048F16A /* Tone.swift in Sources */,
-				63B1162228EB09090030E5EA /* TheraminViewController.swift in Sources */,
+				63B1162228EB09090030E5EA /* ThereminViewController.swift in Sources */,
 				63904E6C28F301D80048F16A /* HandPositionController.swift in Sources */,
 				63B1162628EC6A140030E5EA /* ToneGenerator.swift in Sources */,
 			);
@@ -284,11 +284,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Theramin/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Theremin/Preview Content\"";
 				DEVELOPMENT_TEAM = N92XZM98NX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Theramin/Info.plist;
+				INFOPLIST_FILE = Theremin/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -302,7 +302,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.acromace.Theramin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.acromace.Theremin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -317,11 +317,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Theramin/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Theremin/Preview Content\"";
 				DEVELOPMENT_TEAM = N92XZM98NX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Theramin/Info.plist;
+				INFOPLIST_FILE = Theremin/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -335,7 +335,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.acromace.Theramin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.acromace.Theremin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -346,7 +346,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		63B1160928EB063B0030E5EA /* Build configuration list for PBXProject "Theramin" */ = {
+		63B1160928EB063B0030E5EA /* Build configuration list for PBXProject "Theremin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63B1161C28EB063C0030E5EA /* Debug */,
@@ -355,7 +355,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63B1161E28EB063C0030E5EA /* Build configuration list for PBXNativeTarget "Theramin" */ = {
+		63B1161E28EB063C0030E5EA /* Build configuration list for PBXNativeTarget "Theremin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63B1161F28EB063C0030E5EA /* Debug */,
